@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Alert} from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { addTask } from '../services/api';
 import { RootStackParamList } from '../types';
+import styles from '../styles';
 
 type AddTaskScreenProps = NativeStackScreenProps<RootStackParamList, 'AddTask'>;
 
@@ -41,20 +42,5 @@ const AddTaskScreen: React.FC<AddTaskScreenProps> = ({navigation}) => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        marginBottom: 10,
-        borderRadius: 5,
-    },
-});
 
 export default AddTaskScreen;

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 //import { Platform } from 'react-native';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { fetchTasks } from '../services/api';
 import { RootStackParamList } from '../types';
+import styles from '../styles';
 
 interface Task {
   id: number;
@@ -34,6 +35,11 @@ const CompletedTasksScreen: React.FC<CompletedTasksScreenProps> = ({ navigation 
     loadTasks();
   }, []);
 
+  const navigateToAddTask = useCallback(() => navigation.navigate('AddTask'), [navigation]);
+  const handleNavigate = useCallback((task: Task) => {
+    navigation.navigate('TaskDetails', { task });
+  }, [navigation]);
+
   if (loading) {return <ActivityIndicator size="large" color="blue" />;}
 
   return (
@@ -42,7 +48,7 @@ const CompletedTasksScreen: React.FC<CompletedTasksScreenProps> = ({ navigation 
         data={tasks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate('TaskDetails', { task: item })}>
+          <TouchableOpacity onPress={() => handleNavigate(item)}>
             <View style={styles.taskCard}>
               <Text style={styles.taskTitle}>{item.title}</Text>
               <Text style={styles.taskStatus}>{item.completed ? '✅ Completed' : ''}</Text>
@@ -50,46 +56,9 @@ const CompletedTasksScreen: React.FC<CompletedTasksScreenProps> = ({ navigation 
           </TouchableOpacity>
         )}
       />
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('AddTask')}/>
+      <TouchableOpacity style={styles.fab} onPress={navigateToAddTask}/>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-    backgroundColor: '#fff',
-  },
-  taskCard: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  taskTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  taskStatus: {
-    fontSize: 14,
-    color: 'gray',
-  },
-  fab: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#007AFF',
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-  },
-});
 
 export default CompletedTasksScreen;
